@@ -1,15 +1,23 @@
-from bottle import run, route, debug, template, request
-from bottle import error
+from bottle import run, route, debug, template, request, error, TEMPLATE_PATH
 import sqlite3
-
+global TEMPLATE_PATH
+TEMPLATE_PATH.insert(0, 'Moonsteps')
 @route('/')
 def todo_list():
     conn = sqlite3.connect('todo.db')
     c = conn.cursor()
-    c.execute("SELECT id, task fROM todo WHERE status LIKE '1'")
+    c.execute("SELECT id FROM todo")
+    taskNo = c.fetchone() 
+
+    c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
+
     result = c.fetchall()
     c.close()
-    return template('make_table', rows=result)
+ 
+    return template('make_table', rows=result, TaskNo=taskNo)
+#rows=result, TaskNo=, TaskName=, Task=
+
+#{{TaskNo}}, {{TaskName}}, and {{Task}}
 
 @route('/new', method='GET')
 def new_item():
