@@ -2,6 +2,9 @@ from bottle import run, route, debug, template, request, error, TEMPLATE_PATH
 import sqlite3
 global TEMPLATE_PATH
 TEMPLATE_PATH.insert(0, 'Moonsteps')
+
+taskList = []
+
 @route('/')
 def todo_list():
     conn = sqlite3.connect('todo.db')
@@ -14,14 +17,14 @@ def todo_list():
     result = c.fetchall()
     c.close()
  
-    return template('make_table', rows=result, TaskNo=taskNo)
+    return template('make_table', rows=result, TaskNo=taskNo, taskList = taskList)
 #rows=result, TaskNo=, TaskName=, Task=
 
 #{{TaskNo}}, {{TaskName}}, and {{Task}}
 
 @route('/new', method='GET')
 def new_item():
-    
+   #This page checks GETing the info from whether or not the user has saved to obtain a new task
     if request.GET.save:
         new = request.GET.task.strip()
         conn = sqlite3.connect('todo.db')
