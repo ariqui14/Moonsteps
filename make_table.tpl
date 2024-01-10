@@ -15,6 +15,7 @@
     %else:
       %task = col
       %name = "task" 
+      %print(task)
       %taskList.append(task)
       <input type="checkbox" id={{number}} name={{task}} value = {{task}}>
       <label for={{number}}> {{task}} </label> 

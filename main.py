@@ -16,7 +16,7 @@ def todo_list():
 
     result = c.fetchall()
     c.close()
- 
+    print(taskList)
     return template('make_table', rows=result, TaskNo=taskNo, taskList = taskList)
 #rows=result, TaskNo=, TaskName=, Task=
 
