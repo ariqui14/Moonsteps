@@ -3,19 +3,16 @@
 <p>Moonsteps</p>
 
 %#<table border="1">
-%for row in rows:
-  %#NEED {{TaskNo}}, {{TaskName}}, and {{Task}} passed from main.py
-<br>
-  %number = 0
-  %for col in row:
-    %if type(col) == int:
-      %number = col
-    
-    %else:
-      %task = col
-      %name = "task" 
-      <input type="checkbox" id={{number}} name={{name}} value = {{task}}>
-      <label for={{number}}> {{task}} </label> 
-    
-  %end
+
+%index = 0
+%for task in taskList:
+  %index = taskList.index(task)
+  <input type="checkbox" id={{index}} name={{task}} value = {{task}}>
+  <label for={{index}}> {{task}} </label> 
 %end
+
+<form action="/new" method="GET">
+  <input type="text" size="100" maxlength="100" name="task">
+  <input type="submit" name="New" value="New">
+</form>
+

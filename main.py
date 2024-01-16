@@ -2,29 +2,52 @@ from bottle import run, route, debug, template, request, error, TEMPLATE_PATH
 import sqlite3
 global TEMPLATE_PATH
 TEMPLATE_PATH.insert(0, 'Moonsteps')
-
 taskList = []
-
-@route('/')
+number = 0
+@route('/', method='GET')
 def todo_list():
-    conn = sqlite3.connect('todo.db')
-    c = conn.cursor()
-    c.execute("SELECT id FROM todo")
-    taskNo = c.fetchone() 
+    if request.GET.New:
+        new = request.GET.task.strip()
+        conn = sqlite3.connect('todo.db')
+        c = conn.cursor()
 
-    c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
+        c.execute("INSERT INTO todo (task, status) VALUES (?,?)", (new, 1))
+        taskNo = c.lastrowid
 
-    result = c.fetchall()
-    c.close()
-    print(taskList)
-    return template('make_table', rows=result, TaskNo=taskNo, taskList = taskList)
-#rows=result, TaskNo=, TaskName=, Task=
+        conn.commit()
+        result = c.fetchall()
+        c.close()
+        taskList = []
+        return template('make_checklist', rows=result, TaskNo=taskNo, taskList = taskList)
+    else:
+        conn = sqlite3.connect('todo.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM todo")
+        taskNo = c.fetchone() 
 
+        c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
+
+        result = c.fetchall()
+        c.close()
+        taskList = []
+        for row in result:
+    #NEED {{TaskNo}}, {{TaskName}}, and {{Task}} passed from main.py
+            for col in row:
+                if type(col) == int:
+                    number = col
+                else:
+                 task = col
+                 name = "task" 
+                 taskList.append(task)
+        return template('make_checklist', rows=result, TaskNo=taskNo, taskList = taskList)
+
+#check page when someone clicks a check and check which item was clicked to remove it from the todo.db. 
+    
 #{{TaskNo}}, {{TaskName}}, and {{Task}}
 
 @route('/new', method='GET')
 def new_item():
-   #This page checks GETing the info from whether or not the user has saved to obtain a new task
+    
     if request.GET.save:
         new = request.GET.task.strip()
         conn = sqlite3.connect('todo.db')
