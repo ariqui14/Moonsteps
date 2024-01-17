@@ -4,6 +4,8 @@
 
 %#<table border="1">
 
+<form action="/" method="GET">
+
 %index = 0
 %for task in taskList:
   %index = taskList.index(task)
@@ -11,7 +13,6 @@
   <label for={{index}}> {{task}} </label> 
 %end
 
-<form action="/new" method="GET">
   <input type="text" size="100" maxlength="100" name="task">
   <input type="submit" name="New" value="New">
 </form>

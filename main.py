@@ -1,5 +1,7 @@
 from bottle import run, route, debug, template, request, error, TEMPLATE_PATH
 import sqlite3
+import bottle
+
 global TEMPLATE_PATH
 TEMPLATE_PATH.insert(0, 'Moonsteps')
 taskList = []
@@ -18,7 +20,17 @@ def todo_list():
         result = c.fetchall()
         c.close()
         taskList = []
-        return template('make_checklist', rows=result, TaskNo=taskNo, taskList = taskList)
+        for row in result:
+    #NEED {{TaskNo}}, {{TaskName}}, and {{Task}} passed from main.py
+            for col in row:
+                if type(col) == int:
+                    number = col
+                else:
+                 task = col
+                 name = "task" 
+                 taskList.append(task)
+        
+        return bottle.redirect('/')
     else:
         conn = sqlite3.connect('todo.db')
         c = conn.cursor()
